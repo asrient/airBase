@@ -96,7 +96,8 @@ function initSocket(socket) {
   var sessionId = null;
   var uid = null;
   socket.on("data", (m) => {
-    console.log("new msg from peer");
+    console.log("new msg from peer",Buffer.from(m).toString());
+    console.log("---------------------");
      var msg = message.parse(m);
     if (msg.type != undefined) {
       if (msg.type == 'connect') {
@@ -119,8 +120,10 @@ function initSocket(socket) {
     }
     else{
       //possibly its a HTTP request
-      socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
-      socket.end();
+      socket.write("HTTP/1.1 101 Switching Protocols\r\n"+
+      "Upgrade: websocket\r\n"+
+      "Connection: Upgrade\r\n"+
+      "\r\n");
     }
   })
   socket.on("error", (msg) => {
