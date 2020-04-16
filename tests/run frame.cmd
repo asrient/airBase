@@ -1,0 +1,2 @@
+node testFrame.js
+PAUSE

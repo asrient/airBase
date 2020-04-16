@@ -11,13 +11,22 @@ function buildMessage(obj) {
     if (obj.type == 'connect' && obj.uid != undefined) {
       msg += "uid=" + obj.uid + sep;
     }
+    if (obj.type == 'connect' && obj.host != undefined) {
+      msg += "host=" + obj.host + sep;
+    }
+    if (obj.type == 'connect' && obj.name != undefined) {
+      msg += "name=" + obj.name + sep;
+    }
+    if (obj.type == 'connect' && obj.icon != undefined) {
+      msg += "icon=" + obj.icon + sep;
+    }
+    if (obj.type == 'connect' && obj.app != undefined) {
+      msg += "app=" + obj.app + sep;
+    }
     if (obj.type == 'connected' && obj.airid != undefined) {
       msg += "airid=" + obj.airid + sep;
     }
     if (obj.type == 'request' || obj.type == 'response') {
-      if (obj.key != undefined) {
-        msg += "key=" + obj.key + sep;
-      }
       if (obj.to != undefined) {
         msg += "to=" + obj.to + sep;
       }
@@ -32,17 +41,20 @@ function buildMessage(obj) {
   msg += sep;
   var buff = Buffer.from(msg);
   if (obj.body != undefined) {
-    if(!Buffer.isBuffer(obj.body)){
-      obj.body=Buffer.from(obj.body);
+    if (!Buffer.isBuffer(obj.body)) {
+      obj.body = Buffer.from(obj.body);
     }
-    return Buffer.concat([buff,obj.body])
+    return Buffer.concat([buff, obj.body])
   }
   else
-  return buff;
+    return buff;
 }
 
 function parseMessage(msg) {
   var data = {};
+  if (msg == null) {
+    return ({ type: 'close' })
+  }
   var buff = Buffer.from(msg);
   var offset = buff.indexOf(seperator);
   var body = buff.slice(offset + sepLen);
@@ -75,14 +87,14 @@ function parseMessage(msg) {
             if (key == 'uid' && data.type == 'connect') {
               data[key] = val;
             }
+            if (key == 'host' && data.type == 'connect') {
+              data[key] = val;
+            }
             else if (key == 'airid' && data.type == 'connected') {
               data[key] = val;
             }
             else if (data.type == 'request' || data.type == 'response') {
-              if (key == 'key') {
-                data[key] = val;
-              }
-              else if (key == 'to') {
+              if (key == 'to') {
                 data[key] = val;
               }
               else if (key == 'from') {
@@ -100,4 +112,4 @@ function parseMessage(msg) {
   return data;
 }
 
-module.exports={parse:parseMessage,build:buildMessage}
+module.exports = { parse: parseMessage, build: buildMessage }
