@@ -140,8 +140,11 @@ function initSocket(socket) {
       var m = frame.parse(frm);
       var key = m.key;
       var fin = m.fin;
-      console.log("new msg from peer\n", m);
       console.log("---------------------");
+      console.log("new msg from peer\n", m);
+      console.log('FIN',m.fin);
+      console.log('KEY',Buffer.from(m.key).toString());
+      /////
       if (ongoing[key] != undefined) {
         //send the chunk
         console.log("sending a chunk..",key.toString());
@@ -186,6 +189,7 @@ function initSocket(socket) {
         }
       }
       willContinue = !m.fin;
+      console.log("---------------------");
     }
 
 
