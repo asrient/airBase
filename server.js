@@ -182,7 +182,7 @@ function initSocket(socket) {
           }
         }
         else {
-          console.error("Received a corrupted request from peer ")
+          console.error("Received a corrupted request from peer ",msg);
         }
       }
       willContinue = !m.fin;
