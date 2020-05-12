@@ -141,7 +141,7 @@ function initSocket(socket) {
       var key = m.key;
       var fin = m.fin;
       console.log("---------------------");
-      console.log("new msg from peer\n", m);
+      console.log("new msg from peer\n");
       console.log('FIN',m.fin);
       console.log('KEY',Buffer.from(m.key).toString());
       /////
