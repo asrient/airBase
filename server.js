@@ -137,11 +137,11 @@ function initSocket(socket) {
       isUpgraded = true;
     }
     else {
-      console.log("new msg from peer\n", (Buffer.from(m)));
-      console.log("---------------------");
       var m = frame.parse(frm);
       var key = m.key;
       var fin = m.fin;
+      console.log("new msg from peer\n", m);
+      console.log("---------------------");
       if (ongoing[key] != undefined) {
         //send the chunk
         console.log("sending a chunk..",key.toString());
