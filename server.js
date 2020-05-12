@@ -144,6 +144,7 @@ function initSocket(socket) {
       console.log("new msg from peer",'\n');
       console.log('FIN',m.fin);
       console.log('KEY',Buffer.from(m.key).toString());
+      console.log('DATA',Buffer.from(m.data).toString());
       /////
       if (ongoing[key] != undefined) {
         //send the chunk
