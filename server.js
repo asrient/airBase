@@ -137,8 +137,8 @@ function initSocket(socket) {
       isUpgraded = true;
     }
     else {
-      //console.log("new msg from peer\n", (Buffer.from(m)));
-      //console.log("---------------------");
+      console.log("new msg from peer\n", (Buffer.from(m)));
+      console.log("---------------------");
       var m = frame.parse(frm);
       var key = m.key;
       var fin = m.fin;
