@@ -141,10 +141,10 @@ function initSocket(socket) {
       var key = m.key;
       var fin = m.fin;
       console.log("---------------------");
-      console.log("new msg from peer",'\n');
+      console.log("new msg from peer",Buffer.from(frm).toString(),'\n');
       console.log('FIN',m.fin);
       console.log('KEY',Buffer.from(m.key).toString());
-      console.log('DATA',Buffer.from(m.data).toString());
+      //console.log('DATA',Buffer.from(m.data).toString());
       /////
       if (ongoing[key] != undefined) {
         //send the chunk
