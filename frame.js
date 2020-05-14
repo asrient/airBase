@@ -1,14 +1,41 @@
-const frameSize=65535;
+const frameSize = 65535;
+
+function parseChunk(buffer) {
+  if (buffer.length >= 11) {
+    //Now we are sure all the headers are there
+    const firstByte = buffer.readUInt8(0);
+    const isFinalFrame = Boolean(firstByte);
+    const key = buffer.slice(1, 9);
+    const size = buffer.readUInt16BE(9);
+    if (buffer.length >= size + 11) {
+      //To make sure full payload exists
+      const buff = buffer.slice(11, 11 + size);
+      var remaining = null;
+      if (buffer.length > size + 11) {
+        remaining = buffer.slice(11 + size);
+      }
+      return { chunk: { data: buff, key, size, fin: isFinalFrame }, remaining };
+    }
+    else return { chunk: null, remaining: buffer }
+  }
+  else return { chunk: null, remaining: buffer }
+}
 
 function parse(buffer) {
-  const firstByte = buffer.readUInt8(0);
-  const isFinalFrame = Boolean(firstByte);
-  if (!isFinalFrame) {
-    console.log("Data frame is not the final frame");
+  var remaining = buffer;
+  var chunks = [];
+  var done = false;
+  while (remaining != null && !done) {
+    var res = parseChunk(remaining);
+    if (res.chunk != null) {
+      chunks.push(res.chunk);
+    }
+    else {
+      done = true;
+    }
+    remaining = res.remaining;
   }
-  const key = buffer.slice(1, 9);
-  const buff = buffer.slice(9);
-  return { data: buff, key, fin: isFinalFrame };
+  return { chunks, roaming: remaining }
 }
 
 function build(fin, key, data) {
@@ -21,7 +48,9 @@ function build(fin, key, data) {
   if (keyBytes.length != 8) {
     console.error("Key not 8 bytes", keyBytes.length);
   }
-  const buff = Buffer.concat([firstByte, keyBytes, data]);
+  const size = Buffer.allocUnsafe(2);
+  size.writeUInt16BE(data.length);
+  const buff = Buffer.concat([firstByte, keyBytes, size, data]);
   if (buff.length > frameSize) {
     console.error("Cannot build frame. Buffer size should be < 64KB, current size: " + buff.length / 1024 + " KB");
     return null
