@@ -1,4 +1,4 @@
-const version = '1.0';
+const version = '1.1';
 const seperator = "\r\n\r\n";
 const sepLen = Buffer.byteLength(seperator);
 const types = ['connect', 'connected', 'request', 'response'];
